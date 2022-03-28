@@ -1,0 +1,16 @@
+body {
+  background: lightgrey;
+}
+table {
+  border: 1;
+}
+.zdarzenie {
+  width: 100px;
+  height: 100px;
+  border: 1px;
+  border-radius: 50px;
+  background: red;
+}
+.zdarzenie:hover {
+  background: green;
+}
