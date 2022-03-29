@@ -15,6 +15,7 @@ function skryptStartowy() {
     console.log("sciezkiPoczatkowe", sciezkiPoczatkowe);
 
     let wszystkieSciezki = znajdzWszystkieSciezki(tablicaCzynnosci, sciezkiPoczatkowe);
+    poprawSciezki(wszystkieSciezki);
     console.log("wszystkieSciezki", wszystkieSciezki);
 }
 
@@ -44,17 +45,48 @@ function znajdzSciezkiPoczatkowe(tablica) {
     return result;
 }
 
+function znajdzSciezki(tablica, index, a, b, result) {
+    for(let i = 0; i < tablica[index].nastepniki.length; i++) {
+        let index2 = znajdzIndexElementu(tablica, tablica[index].nastepniki[i]);
+        b++;
+        result[a[0]][b] = tablica[index2].czynnosc;
+        // console.log(tablica[index2].czynnosc, a[0], b);
+        if(tablica[index2].nastepniki.length > 0) {
+            znajdzSciezki(tablica, index2, a, b, result);
+        } else {
+            result.push([]);
+            a[0]++;
+        }
+        b--;
+    }
+}
+
 function znajdzWszystkieSciezki(tablica, poczatkiSciezek) {
     let result = [];
+    result.push([]);
+    let a = [0]; // kontroluje którą ścieżkę tworzę
+    let b = 0; // kontroluje ile elementów ścieżki przepisać
     for(let i = 0; i < poczatkiSciezek.length; i++) {
-        result.push([poczatkiSciezek[i]])
         let index = znajdzIndexElementu(tablica, poczatkiSciezek[i]);
-        //
+
+        result[a[0]][b] = tablica[index].czynnosc;
+        znajdzSciezki(tablica, index, a, b, result);
     }
+    result.pop();
     return result;
 }
 
+function poprawSciezki(sciezki) {
+    for(let i = 0; i < sciezki.length; i++) {
+        for(let j = 0; j < sciezki[i].length; j++) {
+            if(sciezki[i][j] == undefined) {
+                sciezki[i][j] = sciezki[i - 1][j];
+            }
+        }
+    }
+}
 
+// Poznizej jest kod z zajęć
 
 function rysujGraf() {
   let arr = [
