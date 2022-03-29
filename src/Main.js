@@ -15,7 +15,6 @@ function skryptStartowy() {
     console.log("sciezkiPoczatkowe", sciezkiPoczatkowe);
 
     let wszystkieSciezki = znajdzWszystkieSciezki(tablicaCzynnosci, sciezkiPoczatkowe);
-    poprawSciezki(wszystkieSciezki);
     console.log("wszystkieSciezki", wszystkieSciezki);
 }
 
@@ -50,7 +49,6 @@ function znajdzSciezki(tablica, index, a, b, result) {
         let index2 = znajdzIndexElementu(tablica, tablica[index].nastepniki[i]);
         b++;
         result[a[0]][b] = tablica[index2].czynnosc;
-        // console.log(tablica[index2].czynnosc, a[0], b);
         if(tablica[index2].nastepniki.length > 0) {
             znajdzSciezki(tablica, index2, a, b, result);
         } else {
@@ -58,6 +56,16 @@ function znajdzSciezki(tablica, index, a, b, result) {
             a[0]++;
         }
         b--;
+    }
+}
+
+function poprawSciezki(sciezki) {
+    for(let i = 0; i < sciezki.length; i++) {
+        for(let j = 0; j < sciezki[i].length; j++) {
+            if(sciezki[i][j] == undefined) {
+                sciezki[i][j] = sciezki[i - 1][j];
+            }
+        }
     }
 }
 
@@ -73,17 +81,9 @@ function znajdzWszystkieSciezki(tablica, poczatkiSciezek) {
         znajdzSciezki(tablica, index, a, b, result);
     }
     result.pop();
+    poprawSciezki(result);
+    
     return result;
-}
-
-function poprawSciezki(sciezki) {
-    for(let i = 0; i < sciezki.length; i++) {
-        for(let j = 0; j < sciezki[i].length; j++) {
-            if(sciezki[i][j] == undefined) {
-                sciezki[i][j] = sciezki[i - 1][j];
-            }
-        }
-    }
 }
 
 // Poznizej jest kod z zajęć
