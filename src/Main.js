@@ -1,14 +1,14 @@
 function skryptStartowy() {
     let tablicaCzynnosci = [
-        {czynnosc: "A", czas: 5, poprzedzajace: [], nastepujace: []},
-        {czynnosc: "B", czas: 3, poprzedzajace: ["A"], nastepujace: []},
-        {czynnosc: "C", czas: 4, poprzedzajace: [], nastepujace: []},
-        {czynnosc: "D", czas: 6, poprzedzajace: ["A"], nastepujace: []},
-        {czynnosc: "E", czas: 4, poprzedzajace: ["D"], nastepujace: []},
-        {czynnosc: "F", czas: 3, poprzedzajace: ["B", "C", "D"], nastepujace: []}
+        {czynnosc: "A", czas: 5, poprzedniki: [], nastepniki: []},
+        {czynnosc: "B", czas: 3, poprzedniki: ["A"], nastepniki: []},
+        {czynnosc: "C", czas: 4, poprzedniki: [], nastepniki: []},
+        {czynnosc: "D", czas: 6, poprzedniki: ["A"], nastepniki: []},
+        {czynnosc: "E", czas: 4, poprzedniki: ["D"], nastepniki: []},
+        {czynnosc: "F", czas: 3, poprzedniki: ["B", "C", "D"], nastepniki: []}
     ];
 
-    uzupelnijNastepujace(tablicaCzynnosci);
+    uzupelnijNastepniki(tablicaCzynnosci);
     console.log("tablicaCzynnosci", tablicaCzynnosci);
 
     let sciezkiPoczatkowe = znajdzSciezkiPoczatkowe(tablicaCzynnosci);
@@ -25,11 +25,11 @@ function znajdzIndexElementu(tablica, element) {
     return undefined;
 }
 
-function uzupelnijNastepujace(tablica) {
+function uzupelnijNastepniki(tablica) {
     for(let i = 0; i < tablica.length; i++) {
-        for(let j = 0; j < tablica[i].poprzedzajace.length; j++) {
-            let index = znajdzIndexElementu(tablica, tablica[i].poprzedzajace[j]);
-            tablica[index].nastepujace.push(tablica[i].czynnosc);
+        for(let j = 0; j < tablica[i].poprzedniki.length; j++) {
+            let index = znajdzIndexElementu(tablica, tablica[i].poprzedniki[j]);
+            tablica[index].nastepniki.push(tablica[i].czynnosc);
         }
     }
 }
@@ -38,7 +38,7 @@ function znajdzSciezkiPoczatkowe(tablica) {
     let result = [];
 
     for(let i = 0; i < tablica.length; i++) {
-        if(tablica[i].poprzedzajace.length == 0) result.push(tablica[i].czynnosc);
+        if(tablica[i].poprzedniki.length == 0) result.push(tablica[i].czynnosc);
     }
 
     return result;
