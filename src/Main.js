@@ -9,7 +9,13 @@ function skryptStartowy() {
     ];
 
     uzupelnijNastepujace(tablicaCzynnosci);
-    console.log(tablicaCzynnosci);
+    console.log("tablicaCzynnosci", tablicaCzynnosci);
+
+    let sciezkiPoczatkowe = znajdzSciezkiPoczatkowe(tablicaCzynnosci);
+    console.log("sciezkiPoczatkowe", sciezkiPoczatkowe);
+
+    let wszystkieSciezki = znajdzWszystkieSciezki(tablicaCzynnosci, sciezkiPoczatkowe);
+    console.log("wszystkieSciezki", wszystkieSciezki);
 }
 
 function znajdzIndexElementu(tablica, element) {
@@ -28,7 +34,26 @@ function uzupelnijNastepujace(tablica) {
     }
 }
 
-window.onload = skryptStartowy();
+function znajdzSciezkiPoczatkowe(tablica) {
+    let result = [];
+
+    for(let i = 0; i < tablica.length; i++) {
+        if(tablica[i].poprzedzajace.length == 0) result.push(tablica[i].czynnosc);
+    }
+
+    return result;
+}
+
+function znajdzWszystkieSciezki(tablica, poczatkiSciezek) {
+    let result = [];
+    for(let i = 0; i < poczatkiSciezek.length; i++) {
+        result.push([poczatkiSciezek[i]])
+        let index = znajdzIndexElementu(tablica, poczatkiSciezek[i]);
+        //
+    }
+    return result;
+}
+
 
 
 function rysujGraf() {
