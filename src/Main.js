@@ -1,5 +1,31 @@
 function skryptStartowy() {
-  console.log("Start");
+    let tablicaCzynnosci = [
+        {czynnosc: "A", czas: 5, poprzedzajace: [], nastepujace: []},
+        {czynnosc: "B", czas: 3, poprzedzajace: ["A"], nastepujace: []},
+        {czynnosc: "C", czas: 4, poprzedzajace: [], nastepujace: []},
+        {czynnosc: "D", czas: 6, poprzedzajace: ["A"], nastepujace: []},
+        {czynnosc: "E", czas: 4, poprzedzajace: ["D"], nastepujace: []},
+        {czynnosc: "F", czas: 3, poprzedzajace: ["B", "C", "D"], nastepujace: []}
+    ];
+
+    uzupelnijNastepujace(tablicaCzynnosci);
+    console.log(tablicaCzynnosci);
+}
+
+function znajdzIndexElementu(tablica, element) {
+    for(let i = 0; i < tablica.length; i++) {
+        if(tablica[i].czynnosc == element) return i;
+    }
+    return undefined;
+}
+
+function uzupelnijNastepujace(tablica) {
+    for(let i = 0; i < tablica.length; i++) {
+        for(let j = 0; j < tablica[i].poprzedzajace.length; j++) {
+            let index = znajdzIndexElementu(tablica, tablica[i].poprzedzajace[j]);
+            tablica[index].nastepujace.push(tablica[i].czynnosc);
+        }
+    }
 }
 
 window.onload = skryptStartowy();
