@@ -17,8 +17,8 @@ function skryptStartowy() {
     let wszystkieSciezki = znajdzWszystkieSciezki(tablicaCzynnosci, sciezkiPoczatkowe);
     console.log("wszystkieSciezki", wszystkieSciezki);
 
-    let zdarzenia = stworzTabliceZdarzen(wszystkieSciezki);
-    console.log(zdarzenia);
+    let zdarzenia = stworzTabliceZdarzen(tablicaCzynnosci, wszystkieSciezki, sciezkiPoczatkowe);
+    console.log("zdarzenia", zdarzenia);
 }
 
 function znajdzIndexElementu(tablica, element) {
@@ -89,11 +89,24 @@ function znajdzWszystkieSciezki(tablica, poczatkiSciezek) {
     return result;
 }
 
-function stworzTabliceZdarzen(wszystkieSciezki) {
-    return [];
+function stworzTabliceZdarzen(tablicaCzynnosci, wszystkieSciezki, sciezkiPoczatkowe) {
+    let res = [];
+    res.push({nr: 0, przychodzace: [], wychodzace: [], t0: 0, t1: null, L: null});
+
+    for(let i = 0; i < sciezkiPoczatkowe.length; i++) {
+        // let index = znajdzIndexElementu(tablicaCzynnosci, sciezkiPoczatkowe[i]);
+        res[0].wychodzace.push(sciezkiPoczatkowe[i]);
+
+        // rekurencja?
+        for(let j = 0; j < wszystkieSciezki.length; j++) {
+            // ??
+        }
+    }
+    console.log(wszystkieSciezki);
+    return res;
 }
 
-// Poznizej jest kod z zajęć
+// ================================ Poznizej jest kod z zajęć
 
 function rysujGraf() {
   let arr = [
