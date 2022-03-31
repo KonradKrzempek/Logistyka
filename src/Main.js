@@ -89,20 +89,33 @@ function znajdzWszystkieSciezki(tablica, poczatkiSciezek) {
     return result;
 }
 
+function dodajZdarzenie(tablicaCzynnosci, wszystkieSciezki, sciezkaPrzychodzaca, nr, res) {
+    // let index = znajdzIndexElementu(tablicaCzynnosci, sciezkaPrzychodzaca);
+    
+    // if(sprawdzCzyZdarzenieNieIstnieje()) {
+    //     res.push({nr: nr[0], przychodzace: [sciezkaPrzychodzaca], wychodzace: [], t0: null, t1: null, L: null });
+    //     nr[0]++;
+    //     // dodać zdarzenie wychodzace
+
+    //     // let nowaSciezkaPrzychodzaca = ;
+    //     // warunek if()
+    //     // dodajZdarzenie(tablicaCzynnosci, wszystkieSciezki, nowaSciezkaPrzychodzaca, nr, res)
+    // } else {
+    //     // dodaj sciezke przychodzaca
+    // }
+}
+
 function stworzTabliceZdarzen(tablicaCzynnosci, wszystkieSciezki, sciezkiPoczatkowe) {
+    let nr = [0];
     let res = [];
-    res.push({nr: 0, przychodzace: [], wychodzace: [], t0: 0, t1: null, L: null});
+    res.push({ nr: nr[0], przychodzace: [], wychodzace: [], t0: 0, t1: null, L: null });
+    nr[0]++;
 
     for(let i = 0; i < sciezkiPoczatkowe.length; i++) {
-        // let index = znajdzIndexElementu(tablicaCzynnosci, sciezkiPoczatkowe[i]);
         res[0].wychodzace.push(sciezkiPoczatkowe[i]);
 
-        // rekurencja?
-        for(let j = 0; j < wszystkieSciezki.length; j++) {
-            // ??
-        }
+        dodajZdarzenie(tablicaCzynnosci, wszystkieSciezki, sciezkiPoczatkowe[i], nr, res);
     }
-    console.log(wszystkieSciezki);
     return res;
 }
 
