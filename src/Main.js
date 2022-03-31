@@ -16,6 +16,9 @@ function skryptStartowy() {
 
     let wszystkieSciezki = znajdzWszystkieSciezki(tablicaCzynnosci, sciezkiPoczatkowe);
     console.log("wszystkieSciezki", wszystkieSciezki);
+
+    let zdarzenia = stworzTabliceZdarzen(wszystkieSciezki);
+    console.log(zdarzenia);
 }
 
 function znajdzIndexElementu(tablica, element) {
@@ -84,6 +87,10 @@ function znajdzWszystkieSciezki(tablica, poczatkiSciezek) {
     poprawSciezki(result);
     
     return result;
+}
+
+function stworzTabliceZdarzen(wszystkieSciezki) {
+    return [];
 }
 
 // Poznizej jest kod z zajęć
