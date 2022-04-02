@@ -5,59 +5,37 @@
     <meta charset="utf-8"/>
     <link rel="stylesheet" type="text/css" href="css/style.css"/>
     <script src="src/Main.js"></script>
-    <script>
-        window.onload = skryptStartowy();
-    </script>
 </head>
-<body>
+<body onload="skryptStartowy()">
     <div id="container">
-        <table>
-            <tr>
-                <td>czynność</td>
-                <td>czas trwania, dni</td>
-                <td>skąd</td>
-                <td>dokąd</td>
-            </tr>
-            <tr>
-                <td><input type="text"\></td>
-                <td><input type="number"\></td>
-                <td><input type="number"\></td>
-                <td><input type="number"\></td>
-            </tr>
-            <tr>
-                <td><input type="text"\></td>
-                <td><input type="number"\></td>
-                <td><input type="number"\></td>
-                <td><input type="number"\></td>
-            </tr>
-        </table>
+        <form action="#czynnosci">
+            <label for="czynnosc">Czynność:</label>
+            <input type="text" id="czynnosc" name="czynnosc" required>
+            <label for="czas_trwania">Czas trwania:</label>
+            <input type="number" id="czas_trwania" name="czas_trwania" min="0" required>
+            <label for="zdarzenia_poprz">Zdarzenia poprzedzające:</label>
+            <input type="text" id="zdarzenia_poprz" name="zdarzenia_poprz" required>
+        </form>
+
+        <button id="dodaj" onclick="dodawanie_rekordow()">
+            Dodaj czynność!
+        </button>
         <button onclick="policzSciecke()">
             Licz ścieżkę krytyczną
         </button>
-        <button id="addDiv" onclick="addDiv()">
-            Add
+        <button onclick="removeLast()">
+            Usuń ostatni wiersz
         </button>
-
-
-    <form action="#czynnosci">
-        <label for="czynnosc">Czynność:</label>
-        <input type="text" id="czynnosc" name="czynnosc" required>
-        <label for="czas_trwania">Czas trwania:</label>
-        <input type="number" id="czas_trwania" name="czas_trwania" min="0" required>
-        <label for="zdarzenia_poprz">Zdarzenia poprzedzające:</label>
-        <input type="text" id="zdarzenia_poprz" name="zdarzenia_poprz" required>
-
-    </form>
-    <button id="dodaj" onclick="dodawanie_rekordow()">Dodaj czynność!</button><br><br>
-
-<style> td, th { border: 1px solid black; } </style>
-
-<table id="czynnosci">
-   <thead>
-      <tr> <th> Czynność <th> Czas trwania: <th> Zdarzenie początkowe: </tr>
-   
-</table>
-
-
+        
+        <table id="czynnosci">
+            <tr>
+                <th> Czynność </th>
+                <th> Czas trwania: </th>
+                <th> Czynności poprzedzające: </th>
+            </tr>
+        </table>
+        <p>ścieżka krytyczna: <span id="spanSciezka"></span></p>
+        <p>czas ścieżki krytycznej: <span id="spanCzasSciezki"></span></p>
+    </div>
 </body>
 </html>

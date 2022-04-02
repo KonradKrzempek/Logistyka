@@ -1,9 +1,6 @@
 body {
   background: lightgrey;
 }
-table {
-  border: 1;
-}
 .zdarzenie {
   width: 100px;
   height: 100px;
@@ -13,4 +10,11 @@ table {
 }
 .zdarzenie:hover {
   background: green;
+}
+table, td, th {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+button {
+  margin-bottom: 20px;
 }

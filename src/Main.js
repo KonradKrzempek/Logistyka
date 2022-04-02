@@ -1,18 +1,49 @@
 let tablicaCzynnosci = [
-    // {czynnosc: "A", czas: 5, poprzedniki: [], nastepniki: []},
-    // {czynnosc: "B", czas: 3, poprzedniki: ["A"], nastepniki: []},
-    // {czynnosc: "C", czas: 4, poprzedniki: [], nastepniki: []},
-    // {czynnosc: "D", czas: 6, poprzedniki: ["A"], nastepniki: []},
-    // {czynnosc: "E", czas: 4, poprzedniki: ["D"], nastepniki: []},
-    // {czynnosc: "F", czas: 3, poprzedniki: ["B", "C", "D"], nastepniki: []}
+    {czynnosc: "A", czas: 5, poprzedniki: [], nastepniki: []},
+    {czynnosc: "B", czas: 3, poprzedniki: ["A"], nastepniki: []},
+    {czynnosc: "C", czas: 4, poprzedniki: [], nastepniki: []},
+    {czynnosc: "D", czas: 6, poprzedniki: ["A"], nastepniki: []},
+    {czynnosc: "E", czas: 4, poprzedniki: ["D"], nastepniki: []},
+    {czynnosc: "F", czas: 3, poprzedniki: ["B", "C", "D"], nastepniki: []}
 ];
 let wszystkieSciezki = [];
 
 function skryptStartowy() {
     liczWszystko();
+    
+    for(let i = 0; i < tablicaCzynnosci.length; i++) {
+        dodajWierszTabeli(tablicaCzynnosci[i].czynnosc, tablicaCzynnosci[i].czas, tablicaCzynnosci[i].poprzedniki);
+    }
+}
+
+function dodajWierszTabeli(czynnosc, czas, poprzednicy) {
+    let tabela = document.getElementById("czynnosci");
+    let tr = document.createElement("tr");
+
+    let tds = [];
+    for(let i = 0; i < 3; i++) {
+        tds[i] = document.createElement("td");
+    }
+    tds[0].innerHTML = czynnosc;
+    tds[1].innerHTML = czas;
+    
+    tds[2].innerHTML = "";
+    for(let i = 0; i < poprzednicy.length; i++) {
+        tds[2].innerHTML += poprzednicy[i];
+        if(i < poprzednicy.length - 1) {
+            tds[2].innerHTML += ", ";
+        }
+    }
+
+    tr.appendChild(tds[0]);
+    tr.appendChild(tds[1]);
+    tr.appendChild(tds[2]);
+    tabela.appendChild(tr);
 }
 
 function liczWszystko() {
+    wszystkieSciezki = [];
+
     uzupelnijNastepniki(tablicaCzynnosci);
     console.log("tablicaCzynnosci", tablicaCzynnosci);
 
@@ -30,8 +61,11 @@ function znajdzIndexElementu(tablica, element) {
     return undefined;
 }
 
-function uzupelnijNastepniki(tablica) {
+function uzupelnijNastepniki(tablica) {    
     console.log("tablica: ", tablica);
+    for(let i = 0; i < tablica.length; i++) {
+        tablica[i].nastepniki = [];
+    }
     for(let i = 0; i < tablica.length; i++) {
         for(let j = 0; j < tablica[i].poprzedniki.length; j++) {
             let index = znajdzIndexElementu(tablica, tablica[i].poprzedniki[j]);
@@ -92,80 +126,13 @@ function znajdzWszystkieSciezki(tablica, poczatkiSciezek) {
     return result;
 }
 
-// Poznizej jest kod z zajęć
-
-function rysujGraf() {
-  let arr = [
-      ["A", 5, []],
-      ["B", 3, ["A"]],
-      ["C", 4, []],
-      ["D", 6, ["A"]],
-      ["E", 4, ["D"]],
-      ["F", 3, ["B", "C", "D"]]
-  ];
-
-  // funkcja znajdująca wszystkie końce ścieżek
-
-  let wszystkieSciezki = [];
-  let a = 0;
-  let b = 0;
-  console.log(wszystkieSciezki)
-
-  function znajdzSciezke(thisElement, temp) {
-      wszystkieSciezki[a][b] = temp;
-      b++;
-      if(thisElement[2].length == 0) {
-          console.log(thisElement[0]);
-          a++;
-          b = 1;
-          return;
-      }
-
-      for(let i = 0; i < thisElement[2].length; i++) {
-          let index = 0;
-          for(let j = 0; j < arr.length; j++) {
-              if(arr[j][0] == thisElement[2][i]) {
-                  // console.log(arr[j][0] + ":" + j);
-                  let nowyElement = arr[j];
-                  znajdzSciezke(nowyElement, thisElement[2][i]);
-                  break;
-              }
-          }
-      }
-  }
-
-  let ostatniElement = arr[arr.length - 1];
-
-  for(let i = 0; i < ostatniElement[2].length; i++) {
-      wszystkieSciezki[i] = [];
-      wszystkieSciezki[i][0] = ostatniElement[0];
-  }
-  znajdzSciezke(ostatniElement, ostatniElement[0]);
-
-  console.log(wszystkieSciezki);
-
-  
-
-
-
-}
-
-function addDiv() {
-  let div = document.createElement("div");
-  div.className = "zdarzenie";
-  document.getElementById("container").appendChild(div);
-
-}
 function dodawanie_rekordow(){
     let czynnosc, czas_trwania, zdarzenia_poprz;
     czynnosc = document.getElementById("czynnosc").value;
     czynnosc = czynnosc.toUpperCase();
     czas_trwania = document.getElementById("czas_trwania").value;
     zdarzenia_poprz = document.getElementById("zdarzenia_poprz").value;
-
-    document.getElementById("czynnosci").innerHTML += "<tr><td>" + czynnosc + "</td>" + "<td>" +
-        czas_trwania + "</td>" + "<td>" + zdarzenia_poprz + "</td></tr>";
-
+    
     let arrDane = [];
     
     if (zdarzenia_poprz) {
@@ -173,9 +140,10 @@ function dodawanie_rekordow(){
         arrDane = dane.split(',');
     }
     
-    console.log("arrDane:", arrDane);
+    dodajWierszTabeli(czynnosc, czas_trwania, arrDane);
     tablicaCzynnosci.push({czynnosc: czynnosc, czas: parseInt(czas_trwania), poprzedniki: arrDane, nastepniki: [] });
-    console.log(tablicaCzynnosci);
+
+    console.log(document.getElementById("czynnosci").children[0])
 }
 
 function znajdzIndexMax(tablica) {
@@ -190,13 +158,25 @@ function znajdzIndexMax(tablica) {
             indexMax = i;
         }
     }
+    
+    document.getElementById("spanCzasSciezki").innerHTML = max;
     return indexMax;
+}
+
+function wpiszSciezke(sciezka) {
+    let span = document.getElementById("spanSciezka");
+    span.innerHTML = "";
+
+    for(let i = 0; i <sciezka.length;i++) {
+        span.innerHTML += sciezka[i];
+        if(i < sciezka.length - 1) {
+            span.innerHTML += "-";
+        }
+    }
 }
 
 function policzSciecke() {
     liczWszystko();
-    console.log(tablicaCzynnosci);
-    console.log(wszystkieSciezki);
     let czasySciezek = [];
 
     for(let i = 0; i < wszystkieSciezki.length; i++) {
@@ -209,7 +189,15 @@ function policzSciecke() {
     }
 
     max = znajdzIndexMax(czasySciezek);
-    console.log("Czas ścieżki krytycznej wynosi: ", czasySciezek[max]);
-    console.log("Ścieżka krytyczna: ", wszystkieSciezki[max]);
-    console.log(czasySciezek);
+
+    wpiszSciezke(wszystkieSciezki[max]);
+}
+
+function removeLast() {
+    let tabela = document.getElementById("czynnosci");
+
+    if(tabela.children.length > 1) {
+        tabela.removeChild(tabela.lastChild);
+        tablicaCzynnosci.pop();
+    }
 }
