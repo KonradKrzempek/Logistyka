@@ -31,8 +31,8 @@
                 <td><input type="number"\></td>
             </tr>
         </table>
-        <button onclick="rysujGraf()">
-            Rysuj
+        <button>
+            Empty
         </button>
         <button id="addDiv" onclick="addDiv()">
             Add
@@ -40,16 +40,12 @@
 
 
     <form action="#czynnosci">
-        <label for="lp">Lp:</label>
-        <input type="number" id="lp" name="lp" required>
         <label for="czynnosc">Czynność:</label>
         <input type="text" id="czynnosc" name="czynnosc" required>
         <label for="czas_trwania">Czas trwania:</label>
         <input type="number" id="czas_trwania" name="czas_trwania" min="0" required>
-        <label for="zdarzenie_pocz">Zdarzenie początkowe:</label>
-        <input type="text" id="zdarzenie_pocz" name="zdarzenie_pocz" required>
-        <label for="zdarzenie_kon">Zdarzenie końcowe:</label>
-        <input type="text" id="zdarzenie_kon" name="zdarzenie_kon" required>
+        <label for="zdarzenia_poprz">Zdarzenia poprzedzające:</label>
+        <input type="text" id="zdarzenia_poprz" name="zdarzenia_poprz" required>
 
     </form>
     <button id="dodaj" onclick="dodawanie_rekordow()">Dodaj czynność!</button><br><br>
@@ -58,7 +54,7 @@
 
 <table id="czynnosci">
    <thead>
-      <tr> <th> Lp: <th> Czynność <th> Czas trwania: <th> Zdarzenie początkowe: <th> Zdarzenie końcowe: </tr>
+      <tr> <th> Czynność <th> Czas trwania: <th> Zdarzenie początkowe: </tr>
    
 </table>
 

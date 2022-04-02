@@ -1,3 +1,12 @@
+let tabelkaGlowna = [
+    // {czynnosc: "A", czas: 5, poprzedniki: [], nastepniki: []},
+    // {czynnosc: "B", czas: 3, poprzedniki: ["A"], nastepniki: []},
+    // {czynnosc: "C", czas: 4, poprzedniki: [], nastepniki: []},
+    // {czynnosc: "D", czas: 6, poprzedniki: ["A"], nastepniki: []},
+    // {czynnosc: "E", czas: 4, poprzedniki: ["D"], nastepniki: []},
+    // {czynnosc: "F", czas: 3, poprzedniki: ["B", "C", "D"], nastepniki: []}
+];
+
 function skryptStartowy() {
 	
     let tablicaCzynnosci = [
@@ -152,16 +161,16 @@ function addDiv() {
 
 }
 function dodawanie_rekordow(){
-    var lp, czynnosc, ilosc, zdarzenie_pocz, zdarzenie_kon;
-    lp = document.getElementById("lp").value;
+    var czynnosc, ilosc, zdarzenie_pocz, zdarzenie_kon;
     czynnosc = document.getElementById("czynnosc").value;
     czynnosc = czynnosc.toUpperCase();
     czas_trwania = document.getElementById("czas_trwania").value;
-    zdarzenie_pocz = document.getElementById("zdarzenie_pocz").value;
-    zdarzenie_kon = document.getElementById("zdarzenie_kon").value;
+    zdarzenia_poprz = document.getElementById("zdarzenia_poprz").value;
 
-    document.getElementById("czynnosci").innerHTML += "<tr><td>" + lp + 
-        "</td>" + "<td>" + czynnosc + "</td>" + "<td>" +
-        czas_trwania + "</td>" + "<td>" + zdarzenie_pocz + "</td>" + "<td>" + 
-        zdarzenie_kon + "</td></tr>";
+    document.getElementById("czynnosci").innerHTML += "<tr><td>" + czynnosc + "</td>" + "<td>" +
+        czas_trwania + "</td>" + "<td>" + zdarzenia_poprz + "</td></tr>";
+
+    let dane = zdarzenia_poprz.replace(/\s+/g, ''); // remove white spaces
+    let arrDane = dane.split(',');
+    tabelkaGlowna.push({czynnosc: czynnosc, czas: czas_trwania, poprzedniki: arrDane, nastepniki: [] });
 }
