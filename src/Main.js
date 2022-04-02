@@ -1,4 +1,4 @@
-let tabelkaGlowna = [
+let tablicaCzynnosci = [
     // {czynnosc: "A", czas: 5, poprzedniki: [], nastepniki: []},
     // {czynnosc: "B", czas: 3, poprzedniki: ["A"], nastepniki: []},
     // {czynnosc: "C", czas: 4, poprzedniki: [], nastepniki: []},
@@ -6,25 +6,20 @@ let tabelkaGlowna = [
     // {czynnosc: "E", czas: 4, poprzedniki: ["D"], nastepniki: []},
     // {czynnosc: "F", czas: 3, poprzedniki: ["B", "C", "D"], nastepniki: []}
 ];
+let wszystkieSciezki = [];
 
 function skryptStartowy() {
-	
-    let tablicaCzynnosci = [
-        {czynnosc: "A", czas: 5, poprzedniki: [], nastepniki: []},
-        {czynnosc: "B", czas: 3, poprzedniki: ["A"], nastepniki: []},
-        {czynnosc: "C", czas: 4, poprzedniki: [], nastepniki: []},
-        {czynnosc: "D", czas: 6, poprzedniki: ["A"], nastepniki: []},
-        {czynnosc: "E", czas: 4, poprzedniki: ["D"], nastepniki: []},
-        {czynnosc: "F", czas: 3, poprzedniki: ["B", "C", "D"], nastepniki: []}
-    ];
+    liczWszystko();
+}
 
+function liczWszystko() {
     uzupelnijNastepniki(tablicaCzynnosci);
     console.log("tablicaCzynnosci", tablicaCzynnosci);
 
     let sciezkiPoczatkowe = znajdzSciezkiPoczatkowe(tablicaCzynnosci);
     console.log("sciezkiPoczatkowe", sciezkiPoczatkowe);
 
-    let wszystkieSciezki = znajdzWszystkieSciezki(tablicaCzynnosci, sciezkiPoczatkowe);
+    wszystkieSciezki = znajdzWszystkieSciezki(tablicaCzynnosci, sciezkiPoczatkowe);
     console.log("wszystkieSciezki", wszystkieSciezki);
 }
 
@@ -36,6 +31,7 @@ function znajdzIndexElementu(tablica, element) {
 }
 
 function uzupelnijNastepniki(tablica) {
+    console.log("tablica: ", tablica);
     for(let i = 0; i < tablica.length; i++) {
         for(let j = 0; j < tablica[i].poprzedniki.length; j++) {
             let index = znajdzIndexElementu(tablica, tablica[i].poprzedniki[j]);
@@ -161,7 +157,7 @@ function addDiv() {
 
 }
 function dodawanie_rekordow(){
-    var czynnosc, ilosc, zdarzenie_pocz, zdarzenie_kon;
+    let czynnosc, czas_trwania, zdarzenia_poprz;
     czynnosc = document.getElementById("czynnosc").value;
     czynnosc = czynnosc.toUpperCase();
     czas_trwania = document.getElementById("czas_trwania").value;
@@ -170,7 +166,50 @@ function dodawanie_rekordow(){
     document.getElementById("czynnosci").innerHTML += "<tr><td>" + czynnosc + "</td>" + "<td>" +
         czas_trwania + "</td>" + "<td>" + zdarzenia_poprz + "</td></tr>";
 
-    let dane = zdarzenia_poprz.replace(/\s+/g, ''); // remove white spaces
-    let arrDane = dane.split(',');
-    tabelkaGlowna.push({czynnosc: czynnosc, czas: czas_trwania, poprzedniki: arrDane, nastepniki: [] });
+    let arrDane = [];
+    
+    if (zdarzenia_poprz) {
+        let dane = zdarzenia_poprz.replace(/\s+/g, ''); // remove white spaces
+        arrDane = dane.split(',');
+    }
+    
+    console.log("arrDane:", arrDane);
+    tablicaCzynnosci.push({czynnosc: czynnosc, czas: parseInt(czas_trwania), poprzedniki: arrDane, nastepniki: [] });
+    console.log(tablicaCzynnosci);
+}
+
+function znajdzIndexMax(tablica) {
+    if(tablica.length < 1) return null;
+
+    let max = tablica[0];
+    let indexMax = 0;
+
+    for(let i = 1; i < tablica.length; i++) {
+        if(tablica[i] > max) {
+            max = tablica[i];
+            indexMax = i;
+        }
+    }
+    return indexMax;
+}
+
+function policzSciecke() {
+    liczWszystko();
+    console.log(tablicaCzynnosci);
+    console.log(wszystkieSciezki);
+    let czasySciezek = [];
+
+    for(let i = 0; i < wszystkieSciezki.length; i++) {
+        czasySciezek.push(0);
+
+        for(let j = 0; j < wszystkieSciezki[i].length; j++) {
+            let index = znajdzIndexElementu(tablicaCzynnosci, wszystkieSciezki[i][j]);
+            czasySciezek[i] += tablicaCzynnosci[index].czas;
+        }
+    }
+
+    max = znajdzIndexMax(czasySciezek);
+    console.log("Czas ścieżki krytycznej wynosi: ", czasySciezek[max]);
+    console.log("Ścieżka krytyczna: ", wszystkieSciezki[max]);
+    console.log(czasySciezek);
 }
