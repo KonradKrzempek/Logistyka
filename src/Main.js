@@ -151,22 +151,17 @@ function addDiv() {
   document.getElementById("container").appendChild(div);
 
 }
-
 function dodawanie_rekordow(){
-	    document.getElementById("dodaj").onclick = function() {
+    var lp, czynnosc, ilosc, zdarzenie_pocz, zdarzenie_kon;
+    lp = document.getElementById("lp").value;
+    czynnosc = document.getElementById("czynnosc").value;
+    czynnosc = czynnosc.toUpperCase();
+    czas_trwania = document.getElementById("czas_trwania").value;
+    zdarzenie_pocz = document.getElementById("zdarzenie_pocz").value;
+    zdarzenie_kon = document.getElementById("zdarzenie_kon").value;
 
-        var lp, czynnosc, ilosc, zdarzenie_pocz, zdarzenie_kon;
-        lp = document.getElementById("lp").value;
-        czynnosc = document.getElementById("czynnosc").value;
-        czynnosc = czynnosc.toUpperCase();
-        czas_trwania = document.getElementById("czas_trwania").value;
-        zdarzenie_pocz = document.getElementById("zdarzenie_pocz").value;
-        zdarzenie_kon = document.getElementById("zdarzenie_kon").value;
-
-
-        document.getElementById("czynnosci").innerHTML += "<tr><td>" + lp + 
-            "</td>" + "<td>" + czynnosc + "</td>" + "<td>" +
-            czas_trwania + "</td>" + "<td>" + zdarzenie_pocz + "</td>" + "<td>" + 
-            zdarzenie_kon + "</td></tr>";
-    }
+    document.getElementById("czynnosci").innerHTML += "<tr><td>" + lp + 
+        "</td>" + "<td>" + czynnosc + "</td>" + "<td>" +
+        czas_trwania + "</td>" + "<td>" + zdarzenie_pocz + "</td>" + "<td>" + 
+        zdarzenie_kon + "</td></tr>";
 }

@@ -50,9 +50,9 @@
         <input type="text" id="zdarzenie_pocz" name="zdarzenie_pocz" required>
         <label for="zdarzenie_kon">Zdarzenie końcowe:</label>
         <input type="text" id="zdarzenie_kon" name="zdarzenie_kon" required>
-        <button id="dodaj">Dodaj czynność!</button><br><br>
 
     </form>
+    <button id="dodaj" onclick="dodawanie_rekordow()">Dodaj czynność!</button><br><br>
 
 <style> td, th { border: 1px solid black; } </style>
 
@@ -64,26 +64,4 @@
 
 
 </body>
-
-
-<script>
-    document.getElementById("dodaj").onclick = function() {
-
-        var lp, czynnosc, czas_trwania, zdarzenie_pocz, zdarzenie_kon;
-        lp = document.getElementById("lp").value;
-        czynnosc = document.getElementById("czynnosc").value;
-        czynnosc = czynnosc.toUpperCase();
-        czas_trwania = document.getElementById("czas_trwania").value;
-        zdarzenie_pocz = document.getElementById("zdarzenie_pocz").value;
-        zdarzenie_kon = document.getElementById("zdarzenie_kon").value;
-
-
-
-        document.getElementById("czynnosci").innerHTML += "<tr><td>" + lp + 
-            "</td>" + "<td>" + czynnosc + "</td>" + "<td>" +
-            czas_trwania + "</td>" + "<td>" + zdarzenie_pocz + "</td>" + "<td>" + 
-            zdarzenie_kon + "</td></tr>";
-    }
-</script>
-
 </html>
