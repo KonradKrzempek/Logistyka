@@ -105,18 +105,160 @@ function dodajZdarzenie(tablicaCzynnosci, wszystkieSciezki, sciezkaPrzychodzaca,
     // }
 }
 
-function stworzTabliceZdarzen(tablicaCzynnosci, wszystkieSciezki, sciezkiPoczatkowe) {
-    let nr = [0];
-    let res = [];
-    res.push({ nr: nr[0], przychodzace: [], wychodzace: [], t0: 0, t1: null, L: null });
-    nr[0]++;
-
-    for(let i = 0; i < sciezkiPoczatkowe.length; i++) {
-        res[0].wychodzace.push(sciezkiPoczatkowe[i]);
-
-        dodajZdarzenie(tablicaCzynnosci, wszystkieSciezki, sciezkiPoczatkowe[i], nr, res);
+function znajdzZdarzeniePoCzynnosci(tablica, nastepniki) {
+    for(let i = 0; i < tablica.length; i++) {
+        for(let j = 0; j < tablica[i].czynnosciPrzed.length; j++) {
+            for(let k = 0; k < nastepniki.length; k++) {
+                if(tablica[i].czynnosciPrzed[j] == nastepniki[k]) {
+                    // console.log("ZnalezionoZdarzeniePo", i, j, k, nastepniki[k]);
+                    return i;
+                }
+            }
+        }
     }
-    return res;
+    return null;
+}
+
+function znajdzZdarzeniePrzedCzynnoscia(tablica, poprzedniki) {
+    for(let i = 0; i < tablica.length; i++) {
+        for(let j = 0; j < tablica[i].czynnosciPo.length; j++) {
+            for(let k = 0; k < poprzedniki.length; k++) {
+                if(tablica[i].czynnosciPo[j] == poprzedniki[k]) {
+                    // console.log("ZnalezionoZdarzeniePrzed", i, j, k, poprzedniki[k]);
+                    return i;
+                }
+            }
+        }
+    }
+    return null;
+}
+
+function stworzZdarzenie(tablica, nr) {
+    console.log("Tworzenie nowego zdarzenia nr " + nr[0]);
+    tablica.push({nr: nr[0], poprzedniki: [], nastepniki: [], czynnosciPrzed: [], czynnosciPo: [], t0: null, t1: null, L: null });
+    nr[0]++;
+    return nr[0]-1;
+}
+
+function stworzTabliceZdarzen(tablicaCzynnosci, wszystkieSciezki, sciezkiPoczatkowe) {
+    let result = [];
+    let indexOstatniego = null;
+    
+    let nr = [0];
+    indexPierwszego = stworzZdarzenie(result, nr);
+    
+    for(let i = 0; i < tablicaCzynnosci.length;i++) {
+        let indexZdarzeniaPrzedCzynnoscia = null;
+        let indexZdarzeniaPoCzynnosci = null;
+
+        if(tablicaCzynnosci[i].poprzedniki.length == 0) {
+            indexZdarzeniaPrzedCzynnoscia = 0;
+        } else {
+            indexZdarzeniaPrzedCzynnoscia = znajdzZdarzeniePoCzynnosci(result, tablicaCzynnosci[i].poprzedniki);
+            if(indexZdarzeniaPrzedCzynnoscia == null) {
+                indexZdarzeniaPrzedCzynnoscia = stworzZdarzenie(result, nr);
+            }
+        }
+        if(tablicaCzynnosci[i].nastepniki.length == 0) {
+            if(indexOstatniego == null) {
+                indexOstatniego = stworzZdarzenie(result, nr);
+            }
+            indexZdarzeniaPoCzynnosci = indexOstatniego;
+        } else {
+            indexZdarzeniaPoCzynnosci = znajdzZdarzeniePrzedCzynnoscia(result, tablicaCzynnosci[i].nastepniki);
+            if(indexZdarzeniaPoCzynnosci == null) {
+                indexZdarzeniaPoCzynnosci = stworzZdarzenie(result, nr);
+            }
+        }
+        console.log(i, ": ", indexZdarzeniaPrzedCzynnoscia, indexZdarzeniaPoCzynnosci);
+        console.log();
+
+        result[indexZdarzeniaPrzedCzynnoscia].czynnosciPo.push(tablicaCzynnosci[i].czynnosc);
+        result[indexZdarzeniaPoCzynnosci].czynnosciPrzed.push(tablicaCzynnosci[i].czynnosc);
+
+        result[indexZdarzeniaPrzedCzynnoscia].nastepniki.push(indexZdarzeniaPoCzynnosci);
+        result[indexZdarzeniaPoCzynnosci].poprzedniki.push(indexZdarzeniaPrzedCzynnoscia);
+
+        result[indexZdarzeniaPoCzynnosci].czynnosciPo.concat(tablicaCzynnosci[i].nastepniki);
+
+
+        if(i == 3) break;
+        // if(tablicaCzynnosci[i].poprzedniki.length == 0) {
+        //     let index = znajdzZdarzeniePoCzynnosci(result, tablicaCzynnosci[i]);
+        //     if(!index) {
+        //         console.log("tworze1");
+        //         result.push({nr: nr, poprzedniki: [0], nastepniki: [], czynnoscPrzed: [tablicaCzynnosci[i].czynnosc], czynnoscZa: [], t0: null, t1: null, L: null });
+        //         index = nr;
+        //         nr++;
+        //     } else {
+        //         result[index].poprzedniki.push(0);
+        //         result[index].czynnoscPrzed.push(tablicaCzynnosci[i].czynnosc);
+        //     }
+            
+        //     result[0].nastepniki.push(index);
+        //     result[0].czynnoscZa.push(tablicaCzynnosci[i].czynnosc);
+        //     continue;
+        // }
+
+        // if(tablicaCzynnosci[i].nastepniki.length == 0) {
+        //     if(!indexOstatniego) {
+        //         console.log("tworze2");
+        //         result.push({nr: nr, poprzedniki: [], nastepniki: [], czynnoscPrzed: [], czynnoscZa: [], t0: null, t1: null, L: null });
+        //         indexOstatniego = nr;
+        //         nr++;
+        //     }
+
+        //     let index = znajdzZdarzeniePrzedCzynnoscia(result, tablicaCzynnosci[i]);
+        //     if(!index) {
+        //         console.log("tworze3");
+        //         result.push({nr: nr, poprzedniki: [], nastepniki: [indexOstatniego], czynnoscPrzed: [], czynnoscZa: [tablicaCzynnosci[i].czynnosc], t0: null, t1: null, L: null });
+        //         index = nr;
+        //         nr++;
+        //     } else {
+        //         result[index].nastepniki.push(indexOstatniego);
+        //         result[index].czynnoscZa.push(tablicaCzynnosci[i].czynnosc);
+        //     }
+
+        //     result[indexOstatniego].poprzedniki.push(index);
+        //     result[indexOstatniego].czynnoscPrzed.push(tablicaCzynnosci[i].czynnosc)
+
+        //     continue;
+        // }
+
+        // podłącz się/stwórz do dwóch
+
+
+
+        // if(tablicaCzynnosci[i].poprzedniki.length == 0) { // wychodzi z pierwszego zdarzenia
+        //     result[0].wychodzace.push(tablicaCzynnosci[i].czynnosc);
+        // }
+
+        // if(tablicaCzynnosci[i].nastepniki.length == 0) {// wchodzi do ostatniego
+        //     if(!indexOstatniego) {
+        //         result.push({nr: nr, przychodzace: [], wychodzace: [], t0: null, t1: null, L: null });
+        //         indexOstatniego = nr;
+        //         nr++;
+        //     }
+        //     result[indexOstatniego].przychodzace.push(tablicaCzynnosci[i].czynnosc);
+        // } else {
+        //     // try to 
+        // }
+
+
+        // console.log(tablicaCzynnosci[i]);
+    }
+    // let nr = [0];
+    // let res = [];
+    // res.push({ nr: nr[0], przychodzace: [], wychodzace: [], t0: 0, t1: null, L: null });
+    // nr[0]++;
+
+    // for(let i = 0; i < sciezkiPoczatkowe.length; i++) {
+    //     res[0].wychodzace.push(sciezkiPoczatkowe[i]);
+
+    //     dodajZdarzenie(tablicaCzynnosci, wszystkieSciezki, sciezkiPoczatkowe[i], nr, res);
+    // }
+    // return res;
+    return result
 }
 
 // ================================ Poznizej jest kod z zajęć
