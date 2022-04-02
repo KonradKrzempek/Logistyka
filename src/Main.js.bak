@@ -167,6 +167,7 @@ function dodawanie_rekordow(){
         document.getElementById("czynnosci").innerHTML += "<tr><td>" + lp + 
             "</td>" + "<td>" + czynnosc + "</td>" + "<td>" +
             czas_trwania + "</td>" + "<td>" + zdarzenie_pocz + "</td>" + "<td>" + 
-            zdarzenie_kon + "</td></tr>";
+            zdarzenie_kon + "</td>" + "<td>" 
+            + "</td></tr>";
     }
 }
