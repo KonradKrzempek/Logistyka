@@ -7,7 +7,8 @@ let tablicaCzynnosci = [
     {czynnosc: "F", czas: 3, poprzedniki: ["B", "C"], nastepniki: [], zdarzeniePrzed: null, zdarzeniePo: null }
 ];
 let wszystkieSciezki = [];
-let tabicaZdarzen = [];
+let tablicaZdarzen = [];
+let indexOstatniegoZdarzenia = null;
 
 function skryptStartowy() {
     liczWszystko();
@@ -55,6 +56,7 @@ function liczWszystko() {
     console.log("wszystkieSciezki", wszystkieSciezki);
 
     tablicaZdarzen = liczZdarzenia(tablicaCzynnosci, sciezkiPoczatkowe);
+    policzCzasyZdarzen(tablicaZdarzen, tablicaCzynnosci);
     console.log("tablicaZdarzen", tablicaZdarzen);
 }
 
@@ -208,9 +210,8 @@ function removeLast() {
 
 function liczZdarzenia(tablicaCzynnosci, sciezkiPoczatkowe) {
     let res = [];
-    let indexOstatniego = null;
 
-    res.push({nr: 0, t0: null, t1: null, L: null, czynnosciPrzed: [], czynnosciZa: sciezkiPoczatkowe });
+    res.push({nr: 0, t0: null, t1: null, L: null, czynnosciPrzed: [], czynnosciZa: sciezkiPoczatkowe, czasyCzynnosciPrzed: [], czasyCzynnosciPo: [] });
 
     for(let i = 0; i < tablicaCzynnosci.length; i++) {
         if(tablicaCzynnosci[i].poprzedniki.length == 0) {
@@ -221,13 +222,13 @@ function liczZdarzenia(tablicaCzynnosci, sciezkiPoczatkowe) {
         }
 
         if(tablicaCzynnosci[i].nastepniki.length == 0) {
-            if(indexOstatniego == null) {
+            if(indexOstatniegoZdarzenia == null) {
                 let index = res.length;
-                res.push({nr: index, t0: null, t1: null, L: null, czynnosciPrzed: [], czynnosciZa: [] });
-                indexOstatniego = index;
+                res.push({nr: index, t0: null, t1: null, L: null, czynnosciPrzed: [], czynnosciZa: [], czasyCzynnosciPrzed: [], czasyCzynnosciPo: []  });
+                indexOstatniegoZdarzenia = index;
             }
-            tablicaCzynnosci[i].zdarzeniePo = indexOstatniego;
-            res[indexOstatniego].czynnosciPrzed.push(tablicaCzynnosci[i].czynnosc);
+            tablicaCzynnosci[i].zdarzeniePo = indexOstatniegoZdarzenia;
+            res[indexOstatniegoZdarzenia].czynnosciPrzed.push(tablicaCzynnosci[i].czynnosc);
         } else {
             let index = znajdzZdarzeniePoCzynnosci(res, tablicaCzynnosci[i].nastepniki, tablicaCzynnosci);
             tablicaCzynnosci[i].zdarzeniePo = index;
@@ -251,7 +252,7 @@ function znajdzZdarzeniePrzedCzynnoscia(res, poprzedniki, tablicaCzynnosci) {
     let nastepnikiPoprzednika = tablicaCzynnosci[znajdzIndexElementu(tablicaCzynnosci, poprzedniki[0])].nastepniki;
 
     let index = res.length;
-    res.push({nr: index, t0: null, t1: null, L: null, czynnosciPrzed: poprzedniki, czynnosciZa: nastepnikiPoprzednika });
+    res.push({nr: index, t0: null, t1: null, L: null, czynnosciPrzed: poprzedniki, czynnosciZa: nastepnikiPoprzednika, czasyCzynnosciPrzed: [], czasyCzynnosciPo: [] });
     return index;
 }
 
@@ -269,6 +270,53 @@ function znajdzZdarzeniePoCzynnosci(res, nastepniki, tablicaCzynnosci) {
     let poprzednikiNastepnika = tablicaCzynnosci[znajdzIndexElementu(tablicaCzynnosci, nastepniki[0])].poprzedniki;
 
     let index = res.length;
-    res.push({nr: index, t0: null, t1: null, L: null, czynnosciPrzed: poprzednikiNastepnika, czynnosciZa: nastepniki });
+    res.push({nr: index, t0: null, t1: null, L: null, czynnosciPrzed: poprzednikiNastepnika, czynnosciZa: nastepniki, czasyCzynnosciPrzed: [], czasyCzynnosciPo: [] });
     return index;
+}
+
+function policzCzasyZdarzen(tablicaZdarzen, tablicaCzynnosci) {
+    tablicaZdarzen[0].t0 = 0;
+    for(let i = 0; i < tablicaZdarzen[0].czynnosciZa.length; i++) {
+        liczCzast0(tablicaCzynnosci, tablicaZdarzen, tablicaCzynnosci[znajdzIndexElementu(tablicaCzynnosci, tablicaZdarzen[0].czynnosciZa[i])], tablicaZdarzen[0].t0);
+    }
+
+    tablicaZdarzen[indexOstatniegoZdarzenia].t1 = tablicaZdarzen[indexOstatniegoZdarzenia].t0;
+    
+    for(let i = 0; i < tablicaZdarzen[indexOstatniegoZdarzenia].czynnosciPrzed.length; i++) {
+        liczCzast1(tablicaCzynnosci, tablicaZdarzen, tablicaCzynnosci[znajdzIndexElementu(tablicaCzynnosci, tablicaZdarzen[indexOstatniegoZdarzenia].czynnosciPrzed[i])], tablicaZdarzen[indexOstatniegoZdarzenia].t1);
+    }
+
+    for(let i = 0; i < tablicaZdarzen.length; i++) {
+        tablicaZdarzen[i].L = tablicaZdarzen[i].t1 - tablicaZdarzen[i].t0;
+    }
+}
+
+function liczCzast0(tablicaCzynnosci, tablicaZdarzen, czynnosc, czas) {
+    let index = czynnosc.zdarzeniePo;
+    tablicaZdarzen[index].czasyCzynnosciPrzed.push(czas + czynnosc.czas);
+
+    let var1 = tablicaZdarzen[index].czasyCzynnosciPrzed.length;
+    let var2 = tablicaZdarzen[index].czynnosciPrzed.length;
+
+    if(var1 == var2) {
+        tablicaZdarzen[index].t0 = Math.max.apply(null, tablicaZdarzen[index].czasyCzynnosciPrzed);
+        for(let i = 0; i < tablicaZdarzen[index].czynnosciZa.length; i++) {
+            liczCzast0(tablicaCzynnosci, tablicaZdarzen, tablicaCzynnosci[znajdzIndexElementu(tablicaCzynnosci, tablicaZdarzen[index].czynnosciZa[i])], tablicaZdarzen[index].t0);
+        }
+    }
+}
+
+function liczCzast1(tablicaCzynnosci, tablicaZdarzen, czynnosc, czas) {
+    let index = czynnosc.zdarzeniePrzed;
+    tablicaZdarzen[index].czasyCzynnosciPo.push(czas - czynnosc.czas);
+
+    let var1 = tablicaZdarzen[index].czasyCzynnosciPo.length;
+    let var2 = tablicaZdarzen[index].czynnosciZa.length;
+
+    if(var1 == var2) {
+        tablicaZdarzen[index].t1 = Math.min.apply(null, tablicaZdarzen[index].czasyCzynnosciPo);
+        for(let i = 0; i < tablicaZdarzen[index].czynnosciPrzed.length; i++) {
+            liczCzast1(tablicaCzynnosci, tablicaZdarzen, tablicaCzynnosci[znajdzIndexElementu(tablicaCzynnosci, tablicaZdarzen[index].czynnosciPrzed[i])], tablicaZdarzen[index].t1);
+        }
+    }
 }
