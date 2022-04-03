@@ -1,12 +1,13 @@
 let tablicaCzynnosci = [
-    {czynnosc: "A", czas: 5, poprzedniki: [], nastepniki: []},
-    {czynnosc: "B", czas: 3, poprzedniki: ["A"], nastepniki: []},
-    {czynnosc: "C", czas: 4, poprzedniki: [], nastepniki: []},
-    {czynnosc: "D", czas: 6, poprzedniki: ["A"], nastepniki: []},
-    {czynnosc: "E", czas: 4, poprzedniki: ["D"], nastepniki: []},
-    {czynnosc: "F", czas: 3, poprzedniki: ["B", "C", "D"], nastepniki: []}
+    {czynnosc: "A", czas: 5, poprzedniki: [], nastepniki: [], zdarzeniePrzed: null, zdarzeniePo: null },
+    {czynnosc: "B", czas: 3, poprzedniki: ["A"], nastepniki: [], zdarzeniePrzed: null, zdarzeniePo: null },
+    {czynnosc: "C", czas: 4, poprzedniki: [], nastepniki: [], zdarzeniePrzed: null, zdarzeniePo: null },
+    {czynnosc: "D", czas: 6, poprzedniki: ["A"], nastepniki: [], zdarzeniePrzed: null, zdarzeniePo: null },
+    {czynnosc: "E", czas: 4, poprzedniki: ["D"], nastepniki: [], zdarzeniePrzed: null, zdarzeniePo: null },
+    {czynnosc: "F", czas: 3, poprzedniki: ["B", "C"], nastepniki: [], zdarzeniePrzed: null, zdarzeniePo: null }
 ];
 let wszystkieSciezki = [];
+let tabicaZdarzen = [];
 
 function skryptStartowy() {
     liczWszystko();
@@ -52,6 +53,9 @@ function liczWszystko() {
 
     wszystkieSciezki = znajdzWszystkieSciezki(tablicaCzynnosci, sciezkiPoczatkowe);
     console.log("wszystkieSciezki", wszystkieSciezki);
+
+    tablicaZdarzen = liczZdarzenia(tablicaCzynnosci, sciezkiPoczatkowe);
+    console.log("tablicaZdarzen", tablicaZdarzen);
 }
 
 function znajdzIndexElementu(tablica, element) {
@@ -141,7 +145,7 @@ function dodawanie_rekordow(){
     }
     
     dodajWierszTabeli(czynnosc, czas_trwania, arrDane);
-    tablicaCzynnosci.push({czynnosc: czynnosc, czas: parseInt(czas_trwania), poprzedniki: arrDane, nastepniki: [] });
+    tablicaCzynnosci.push({czynnosc: czynnosc, czas: parseInt(czas_trwania), poprzedniki: arrDane, nastepniki: [], zdarzeniePrzed: null, zdarzeniePo: null });
 
     console.log(document.getElementById("czynnosci").children[0])
 }
@@ -200,4 +204,71 @@ function removeLast() {
         tabela.removeChild(tabela.lastChild);
         tablicaCzynnosci.pop();
     }
+}
+
+function liczZdarzenia(tablicaCzynnosci, sciezkiPoczatkowe) {
+    let res = [];
+    let indexOstatniego = null;
+
+    res.push({nr: 0, t0: null, t1: null, L: null, czynnosciPrzed: [], czynnosciZa: sciezkiPoczatkowe });
+
+    for(let i = 0; i < tablicaCzynnosci.length; i++) {
+        if(tablicaCzynnosci[i].poprzedniki.length == 0) {
+            tablicaCzynnosci[i].zdarzeniePrzed = 0;
+        } else {
+            let index = znajdzZdarzeniePrzedCzynnoscia(res, tablicaCzynnosci[i].poprzedniki, tablicaCzynnosci);
+            tablicaCzynnosci[i].zdarzeniePrzed = index;
+        }
+
+        if(tablicaCzynnosci[i].nastepniki.length == 0) {
+            if(indexOstatniego == null) {
+                let index = res.length;
+                res.push({nr: index, t0: null, t1: null, L: null, czynnosciPrzed: [], czynnosciZa: [] });
+                indexOstatniego = index;
+            }
+            tablicaCzynnosci[i].zdarzeniePo = indexOstatniego;
+            res[indexOstatniego].czynnosciPrzed.push(tablicaCzynnosci[i].czynnosc);
+        } else {
+            let index = znajdzZdarzeniePoCzynnosci(res, tablicaCzynnosci[i].nastepniki, tablicaCzynnosci);
+            tablicaCzynnosci[i].zdarzeniePo = index;
+        }
+    }
+
+    return res;
+}
+
+function znajdzZdarzeniePrzedCzynnoscia(res, poprzedniki, tablicaCzynnosci) {
+    for(let i = 0; i < res.length; i++) {
+        for(let j = 0; j < res[i].czynnosciPrzed.length; j++) {
+            for(let k = 0; k < poprzedniki.length; k++) {
+                if(res[i].czynnosciPrzed[j] == poprzedniki[k]) {
+                    return i;
+                }
+            }
+        }
+    }
+
+    let nastepnikiPoprzednika = tablicaCzynnosci[znajdzIndexElementu(tablicaCzynnosci, poprzedniki[0])].nastepniki;
+
+    let index = res.length;
+    res.push({nr: index, t0: null, t1: null, L: null, czynnosciPrzed: poprzedniki, czynnosciZa: nastepnikiPoprzednika });
+    return index;
+}
+
+function znajdzZdarzeniePoCzynnosci(res, nastepniki, tablicaCzynnosci) {
+    for(let i = 0; i < res.length; i++) {
+        for(let j = 0; j < res[i].czynnosciZa.length; j++) {
+            for(let k = 0; k < nastepniki.length; k++) {
+                if(res[i].czynnosciZa[j] == nastepniki[k]) {
+                    return i;
+                }
+            }
+        }
+    }
+    
+    let poprzednikiNastepnika = tablicaCzynnosci[znajdzIndexElementu(tablicaCzynnosci, nastepniki[0])].poprzedniki;
+
+    let index = res.length;
+    res.push({nr: index, t0: null, t1: null, L: null, czynnosciPrzed: poprzednikiNastepnika, czynnosciZa: nastepniki });
+    return index;
 }
