@@ -14,11 +14,11 @@ function skryptStartowy() {
     liczWszystko();
     
     for(let i = 0; i < tablicaCzynnosci.length; i++) {
-        dodajWierszTabeli(tablicaCzynnosci[i].czynnosc, tablicaCzynnosci[i].czas, tablicaCzynnosci[i].poprzedniki);
+        dodajWierszTabeliCzynnosc(tablicaCzynnosci[i].czynnosc, tablicaCzynnosci[i].czas, tablicaCzynnosci[i].poprzedniki);
     }
 }
 
-function dodajWierszTabeli(czynnosc, czas, poprzednicy) {
+function dodajWierszTabeliCzynnosc(czynnosc, czas, poprzednicy) {
     let tabela = document.getElementById("czynnosci");
     let tr = document.createElement("tr");
 
@@ -45,6 +45,7 @@ function dodajWierszTabeli(czynnosc, czas, poprzednicy) {
 
 function liczWszystko() {
     wszystkieSciezki = [];
+    indexOstatniegoZdarzenia = null;
 
     uzupelnijNastepniki(tablicaCzynnosci);
     console.log("tablicaCzynnosci", tablicaCzynnosci);
@@ -58,6 +59,12 @@ function liczWszystko() {
     tablicaZdarzen = liczZdarzenia(tablicaCzynnosci, sciezkiPoczatkowe);
     policzCzasyZdarzen(tablicaZdarzen, tablicaCzynnosci);
     console.log("tablicaZdarzen", tablicaZdarzen);
+
+    let zdarzenia = document.getElementById("zdarzenia");
+    while(zdarzenia.children.length > 1) {
+        zdarzenia.removeChild(zdarzenia.lastChild);
+    }
+    wypiszZdarzenia(tablicaZdarzen);
 }
 
 function znajdzIndexElementu(tablica, element) {
@@ -146,7 +153,7 @@ function dodawanie_rekordow(){
         arrDane = dane.split(',');
     }
     
-    dodajWierszTabeli(czynnosc, czas_trwania, arrDane);
+    dodajWierszTabeliCzynnosc(czynnosc, czas_trwania, arrDane);
     tablicaCzynnosci.push({czynnosc: czynnosc, czas: parseInt(czas_trwania), poprzedniki: arrDane, nastepniki: [], zdarzeniePrzed: null, zdarzeniePo: null });
 
     console.log(document.getElementById("czynnosci").children[0])
@@ -181,7 +188,7 @@ function wpiszSciezke(sciezka) {
     }
 }
 
-function policzSciecke() {
+function policzSciezke() {
     liczWszystko();
     let czasySciezek = [];
 
@@ -319,4 +326,25 @@ function liczCzast1(tablicaCzynnosci, tablicaZdarzen, czynnosc, czas) {
             liczCzast1(tablicaCzynnosci, tablicaZdarzen, tablicaCzynnosci[znajdzIndexElementu(tablicaCzynnosci, tablicaZdarzen[index].czynnosciPrzed[i])], tablicaZdarzen[index].t1);
         }
     }
+}
+
+function wypiszZdarzenia(tablicaZdarzen) {
+    for(let i = 0; i < tablicaZdarzen.length; i++) {
+        dodajWierszTabeli("zdarzenia", [i, tablicaZdarzen[i].t0, tablicaZdarzen[i].t1, tablicaZdarzen[i].L]);
+    }
+}
+
+function dodajWierszTabeli(idTabeli, dane) {
+    let tabela = document.getElementById(idTabeli);
+
+    let tr = document.createElement("tr");
+
+    let tds = [];
+    for(let i = 0; i < dane.length; i++) {
+        tds[i] = document.createElement("td");
+        tds[i].innerHTML = dane[i];
+        tr.appendChild(tds[i]);
+    }
+
+    tabela.appendChild(tr);
 }

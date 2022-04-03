@@ -18,3 +18,10 @@ table, td, th {
 button {
   margin-bottom: 20px;
 }
+
+#zdarzenia {
+  margin-top: 50px;
+}
+#zdarzenia th, #zdarzenia td {
+  padding: 4px;
+}

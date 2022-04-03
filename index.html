@@ -20,7 +20,7 @@
         <button id="dodaj" onclick="dodawanie_rekordow()">
             Dodaj czynność!
         </button>
-        <button onclick="policzSciecke()">
+        <button onclick="policzSciezke()">
             Licz ścieżkę krytyczną
         </button>
         <button onclick="removeLast()">
@@ -33,6 +33,20 @@
                 <th> Czas trwania: </th>
                 <th> Czynności poprzedzające: </th>
             </tr>
+        </table>
+        <table id="zdarzenia">
+            <th>
+                nr zdarzenia
+            </th>
+            <th>
+                t0
+            </th>
+            <th>
+                t1
+            </th>
+            <th>
+                L
+            </th>
         </table>
         <p>ścieżka krytyczna: <span id="spanSciezka"></span></p>
         <p>czas ścieżki krytycznej: <span id="spanCzasSciezki"></span></p>
