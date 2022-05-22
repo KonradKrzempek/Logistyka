@@ -172,11 +172,61 @@ function calculateOptimalTransportTable(unitaryGainTable, supplyTable, demandTab
         let allXs = getAllXs(checkTab, M, N);
         console.log(allXs);
 
-        // if(check()) {
-        //     correctIt();
-        // } else {
-        //     break;
-        // }
+        let tempI = Math.floor(maxIndex / N);
+        let tempJ = maxIndex % N;
+        console.log("tempIJ", tempI, tempJ);
+
+        let arrSameYCoor = [];
+        for(let j = 0; j < N; j++) {
+            if(j == tempJ) continue;
+            if(checkTab[tempI*N+j] === "X") {
+                arrSameYCoor.push(j);
+            }
+        }
+        
+        let arrSameXCoor = [];
+        for(let i = 0; i < M; i++) {
+            if(i == tempI) continue;
+            if(checkTab[i*N+tempJ] === "X") {
+                arrSameXCoor.push(i);
+            }
+        }
+
+        console.log("arrSameCoor", arrSameXCoor, arrSameYCoor);
+
+        let myX = -1;
+        let myY = -1;
+        for(let i = 0; i < arrSameXCoor.length; i++) {
+            for(let j = 0; j < arrSameYCoor.length; j++) {
+                if(checkTab[arrSameXCoor[i]*N+arrSameYCoor[j]] === "X") {
+                    console.warn("Znaleziono ok współrzędne:", arrSameXCoor[i], arrSameYCoor[j], checkTab[arrSameXCoor[i]*N+arrSameYCoor[j]]);
+                    myX = arrSameXCoor[i];
+                    myY = arrSameYCoor[j];
+                }
+            }
+        }
+
+        if(myX > -1 && myY > -1) {
+            let smallerValue;
+            if(resultTable[tempI*N+myY] == resultTable[myX*N+tempJ]) {
+                resultTable[tempI*N+myY] = "X";
+                resultTable[myX*N+tempJ] = "X";
+            } else if(resultTable[tempI*N+myY] > resultTable[myX*N+tempJ]) {
+                smallerValue = resultTable[myX*N+tempJ];
+                resultTable[tempI*N+myY] -= smallerValue;
+                resultTable[myX*N+tempJ] = "X";
+            } else {
+                smallerValue = resultTable[tempI*N+myY];
+                resultTable[tempI*N+myY] = "X";
+                resultTable[myX*N+tempJ] -= smallerValue;
+            }
+            resultTable[tempI*N+tempJ] += smallerValue;
+            resultTable[myX*N+myY] += smallerValue;
+        } else {
+            console.warn("Nie udało się uprościć dalej");
+            break;
+        }
+
         maxLimit--;
     }
 
