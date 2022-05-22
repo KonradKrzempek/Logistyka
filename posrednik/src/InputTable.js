@@ -100,7 +100,10 @@ function addRowIntoTable(table, data, type) {
     }
 
     if(type === "td") {
-        for(let i = 0; i < data.length; i++) {
+        let th = document.createElement("th");
+        th.innerHTML = data[0];
+        tr.appendChild(th);
+        for(let i = 1; i < data.length; i++) {
             let td = document.createElement("td");
             td.innerHTML = data[i];
             tr.appendChild(td);

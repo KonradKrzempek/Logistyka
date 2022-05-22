@@ -3,4 +3,6 @@ function Main() {
     spawnInputForm(containerId);
 
     spawnSolveButton(containerId);
+
+    createTables(containerId);
 }

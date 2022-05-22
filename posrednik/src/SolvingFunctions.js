@@ -23,6 +23,14 @@ function solveEverything() {
     let demand = readDemand();
     let optimalTransportTable = calculateOptimalTransportTable(unitaryGainTable, supply, demand);
     console.log("optimalTransportTable", optimalTransportTable);
+
+    updateGainTable(unitaryGainTable);
+
+    updateResTable(optimalTransportTable);
+
+    fillInKosztCalkowity(optimalTransportTable, arraySuppliersCosts);
+    fillInPrzychodCalkowity(optimalTransportTable, arrayRecipientsCosts);
+    fillInZyskPosrednika(optimalTransportTable, unitaryGainTable);
 }
 
 function readTransportCosts() {
@@ -161,6 +169,8 @@ function calculateOptimalTransportTable(unitaryGainTable, supplyTable, demandTab
         // poprawa tabelki
         let maxIndex = findMaxValueIndex(checkTab);
 
+        let allXs = getAllXs(checkTab, M, N);
+        console.log(allXs);
 
         // if(check()) {
         //     correctIt();
@@ -292,4 +302,14 @@ function findMaxValueIndex(tab) {
         }
     }
     return max;
+}
+
+function getAllXs(tab, M, N) {
+    let res = [];
+    for(let i = 0; i < tab.length; i++) {
+        if(tab[i] === "X") {
+            res.push({i: Math.floor(i/N), j: i%N});
+        }
+    }
+    return res;
 }
