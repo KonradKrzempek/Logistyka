@@ -117,6 +117,59 @@ function calculateOptimalTransportTable(unitaryGainTable, supplyTable, demandTab
 
     let resultTable = solveFirstStep(unitaryGainTableExtra, supplyTable, demandTable, M, N);
 
+    // TODO teraz jakiś check czy jest zoptymalizowana, jeśli nie to optymalizować dalej
+    let maxLimit = 10;
+    while(maxLimit) {
+        let alfas = [0];
+        let betas = [];
+
+        fillInAlfasAndBetas(resultTable, unitaryGainTableExtra, alfas, betas, M, N);
+
+        console.log("alfas", alfas);
+        console.log("betas", betas);
+        if(alfas.length != M || betas.length != N) {
+            console.warn("coś z alfa/beta się nie zgadza");
+            break;
+        }
+
+        let checkTab = [];
+        for(let i = 0; i < M; i++) {
+            for(let j = 0; j < N; j++) {
+                if(resultTable[i*N+j] != "X") {
+                    checkTab[i*N+j] = "X";
+                } else {
+                    checkTab[i*N+j] = unitaryGainTableExtra[i*N+j] - alfas[i] - betas[j];
+                }
+            }
+        }
+        console.log("checkTab", checkTab);
+
+        let bCheck = true;
+        for(let i = 0; i < M*N; i++) {
+            if(checkTab[i] == "X") continue;
+            if(checkTab[i] > 0) {
+                bCheck = false;
+                break;
+            }
+        }
+
+        if(bCheck) {
+            console.warn("Wszystko poprawnie");
+            break;
+        }
+
+        // poprawa tabelki
+        let maxIndex = findMaxValueIndex(checkTab);
+
+
+        // if(check()) {
+        //     correctIt();
+        // } else {
+        //     break;
+        // }
+        maxLimit--;
+    }
+
     return resultTable;
 }
 
@@ -184,8 +237,6 @@ function solveFirstStep(unitaryGainTableExtra, supplyTable, demandTable, M, N) {
         }
     }
 
-    // TODO teraz jakiś check czy jest zoptymalizowana, jeśli nie to optymalizować dalej
-
     return res;
 }
 
@@ -206,4 +257,39 @@ function findValidMaxValueIndex(unitaryGainTableExtra, res, M, N) {
         }
     }
     return maxIndex;
+}
+
+function fillInAlfasAndBetas(resultTable, unitaryGainTableExtra, alfas, betas, M, N) {
+    for(let a = 0; a < M || a < N; a++) {
+        for(let i = 0; i < M; i++) {
+            if(alfas[i] == undefined) continue;
+            for(let j = 0; j < N; j++) {
+                if(resultTable[i*N+j] === "X") continue;
+                betas[j] = unitaryGainTableExtra[i*N+j] - alfas[i];
+            }
+        }
+        for(let j = 0; j < N; j++) {
+            if(betas[j] == undefined) continue;
+            for(let i = 0; i < M; i++) {
+                if(resultTable[i*N+j] === "X") continue;
+                alfas[i] = unitaryGainTableExtra[i*N+j] - betas[j];
+            }
+        }
+    }
+}
+
+function findMaxValueIndex(tab) {
+    let max = -1;
+    for(let i = 0; i < tab.length; i++) {
+        if(max == -1) {
+            if(tab[i] != "X") {
+                max = i;
+            }
+        } else {
+            if(tab[i] != "X" && tab[i] > tab[max]) {
+                max = i;
+            }
+        }
+    }
+    return max;
 }
