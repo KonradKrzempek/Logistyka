@@ -1,3 +1,6 @@
 function Main() {
-    spawnInputForm();
+    containerId = "container";
+    spawnInputForm(containerId);
+
+    spawnSolveButton(containerId);
 }
